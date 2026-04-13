@@ -2,17 +2,24 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Calcul de carrelage sans découpe</title>
+  <title>Simulateur de couverture murale</title>
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Select2 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <style>
+    #canvasMur {
+      border: 1px solid #333;
+      margin-top: 20px;
+      background-color: #f9f9f9;
+    }
+  </style>
 </head>
 <body class="bg-light">
   <div class="container mt-5">
     <div class="card shadow">
       <div class="card-header bg-primary text-white">
-        <h3>Calcul du nombre de carreaux (sans découpe)</h3>
+        <h3>Simulateur de couverture murale (sans découpe)</h3>
       </div>
       <div class="card-body">
         <form id="formCarrelage" class="row g-3">
@@ -31,13 +38,14 @@
             <input type="number" class="form-control" id="hauteurCarreau" required>
           </div>
           <div class="col-12">
-            <button type="submit" class="btn btn-success">Calculer</button>
+            <button type="submit" class="btn btn-success">Simuler</button>
           </div>
         </form>
       </div>
     </div>
 
     <div id="resultat" class="mt-4"></div>
+    <canvas id="canvasMur" width="600" height="400"></canvas>
   </div>
 
   <!-- JS Bootstrap + jQuery + Select2 -->
@@ -65,7 +73,7 @@
       });
     });
 
-    // Calcul
+    // Simulation
     document.getElementById("formCarrelage").addEventListener("submit", function(e) {
       e.preventDefault();
 
@@ -76,7 +84,7 @@
       const largeurCarreau = parseFloat(document.getElementById("longueurCarreau").value);
       const hauteurCarreau = parseFloat(document.getElementById("hauteurCarreau").value);
 
-      // Calcul sans découpe (arrondi inférieur)
+      // Calcul sans découpe
       const nbLargeur = Math.floor(largeurMur / largeurCarreau);
       const nbHauteur = Math.floor(hauteurMur / hauteurCarreau);
       const nbTotal = nbLargeur * nbHauteur;
@@ -87,6 +95,7 @@
       const perte = surfaceMur - surfaceCouverte;
       const pourcentagePerte = ((perte / surfaceMur) * 100).toFixed(2);
 
+      // Affichage résultats
       document.getElementById("resultat").innerHTML = `
         <div class="card border-info">
           <div class="card-body">
@@ -94,7 +103,7 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item">Carreaux en largeur : <strong>${nbLargeur}</strong></li>
               <li class="list-group-item">Carreaux en hauteur : <strong>${nbHauteur}</strong></li>
-              <li class="list-group-item">Nombre total de carreaux (sans découpe) : <strong>${nbTotal}</strong></li>
+              <li class="list-group-item">Nombre total de carreaux : <strong>${nbTotal}</strong></li>
               <li class="list-group-item">Surface du mur : <strong>${surfaceMur} cm²</strong></li>
               <li class="list-group-item">Surface couverte : <strong>${surfaceCouverte} cm²</strong></li>
               <li class="list-group-item">Surface perdue : <strong>${perte} cm²</strong></li>
@@ -103,6 +112,38 @@
           </div>
         </div>
       `;
+
+      // Dessin sur Canvas
+      const canvas = document.getElementById("canvasMur");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Mise à l'échelle
+      const scaleX = canvas.width / largeurMur;
+      const scaleY = canvas.height / hauteurMur;
+
+      // Dessiner le mur
+      ctx.strokeStyle = "#000";
+      ctx.strokeRect(0, 0, largeurMur * scaleX, hauteurMur * scaleY);
+
+      // Dessiner les carreaux
+      ctx.fillStyle = "#4CAF50";
+      for (let i = 0; i < nbLargeur; i++) {
+        for (let j = 0; j < nbHauteur; j++) {
+          ctx.fillRect(
+            i * largeurCarreau * scaleX,
+            j * hauteurCarreau * scaleY,
+            largeurCarreau * scaleX,
+            hauteurCarreau * scaleY
+          );
+          ctx.strokeRect(
+            i * largeurCarreau * scaleX,
+            j * hauteurCarreau * scaleY,
+            largeurCarreau * scaleX,
+            hauteurCarreau * scaleY
+          );
+        }
+      }
     });
   </script>
 </body>
