@@ -38,6 +38,7 @@
             <input type="number" class="form-control" id="hauteurCarreau" required>
           </div>
           <div class="col-12">
+            <button type="button" class="btn btn-warning" id="switchBtn">🔄 Inverser largeur/hauteur du carreau</button>
             <button type="submit" class="btn btn-success">Simuler</button>
           </div>
         </form>
@@ -71,6 +72,14 @@
         placeholder: "Choisir les dimensions du mur",
         width: '100%'
       });
+    });
+
+    // Bouton switch largeur/hauteur du carreau
+    document.getElementById("switchBtn").addEventListener("click", function() {
+      const largeurCarreau = document.getElementById("longueurCarreau").value;
+      const hauteurCarreau = document.getElementById("hauteurCarreau").value;
+      document.getElementById("longueurCarreau").value = hauteurCarreau;
+      document.getElementById("hauteurCarreau").value = largeurCarreau;
     });
 
     // Simulation
