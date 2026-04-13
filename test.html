@@ -46,10 +46,10 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <script>
-    // Générer automatiquement toutes les combinaisons largeur x hauteur
+    // Générer automatiquement toutes les combinaisons largeur x hauteur par palier de 2 cm
     const selectMur = document.getElementById("dimensionsMur");
-    for (let largeur = 30; largeur <= 150; largeur += 10) { // pas de 10 cm pour limiter la liste
-      for (let hauteur = 30; hauteur <= 300; hauteur += 10) {
+    for (let largeur = 30; largeur <= 150; largeur += 2) {
+      for (let hauteur = 30; hauteur <= 300; hauteur += 2) {
         const option = document.createElement("option");
         option.value = `${largeur}x${hauteur}`;
         option.textContent = `${largeur} x ${hauteur} cm`;
