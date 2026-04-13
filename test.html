@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Simulateur de couverture murale</title>
   <!-- Bootstrap 5 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Mobile friendly -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Select2 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -12,41 +13,50 @@
       border: 1px solid #333;
       margin-top: 20px;
       background-color: #f9f9f9;
+      width: 100%;   /* Responsive */
+      height: auto;  /* Responsive */
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
   </style>
 </head>
 <body class="bg-light">
-  <div class="container mt-5">
+  <div class="container mt-3 mb-5">
     <div class="card shadow">
       <div class="card-header bg-primary text-white">
-        <h3>Simulateur de couverture murale (sans découpe)</h3>
+        <h5 class="mb-0">Simulateur de couverture murale (sans découpe)</h5>
       </div>
       <div class="card-body">
         <form id="formCarrelage" class="row g-3">
-          <div class="col-md-12">
+          <div class="col-12">
             <label for="dimensionsMur" class="form-label">Dimensions du mur (Largeur x Hauteur en cm)</label>
             <select class="form-select" id="dimensionsMur" required>
               <option value="">Choisir...</option>
             </select>
           </div>
-          <div class="col-md-6">
+          <div class="col-6">
             <label for="longueurCarreau" class="form-label">Largeur du carreau (cm)</label>
             <input type="number" class="form-control" id="longueurCarreau" required>
           </div>
-          <div class="col-md-6">
+          <div class="col-6">
             <label for="hauteurCarreau" class="form-label">Hauteur du carreau (cm)</label>
             <input type="number" class="form-control" id="hauteurCarreau" required>
           </div>
-          <div class="col-12">
-            <button type="button" class="btn btn-warning" id="switchBtn">🔄 Inverser largeur/hauteur du carreau</button>
-            <button type="submit" class="btn btn-success">Simuler</button>
+          <div class="col-12 btn-group">
+            <button type="button" class="btn btn-warning flex-fill" id="switchBtn">🔄 Inverser largeur/hauteur</button>
+            <button type="submit" class="btn btn-success flex-fill">Simuler</button>
           </div>
         </form>
       </div>
     </div>
 
-    <div id="resultat" class="mt-4"></div>
-    <canvas id="canvasMur" width="600" height="400"></canvas>
+    <div id="resultat" class="mt-3"></div>
+    <div class="mt-3">
+      <canvas id="canvasMur"></canvas>
+    </div>
   </div>
 
   <!-- JS Bootstrap + jQuery + Select2 -->
@@ -108,7 +118,7 @@
       document.getElementById("resultat").innerHTML = `
         <div class="card border-info">
           <div class="card-body">
-            <h4 class="card-title">Résultats :</h4>
+            <h5 class="card-title">Résultats :</h5>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">Carreaux en largeur : <strong>${nbLargeur}</strong></li>
               <li class="list-group-item">Carreaux en hauteur : <strong>${nbHauteur}</strong></li>
@@ -122,9 +132,14 @@
         </div>
       `;
 
-      // Dessin sur Canvas
+      // Dessin sur Canvas responsive
       const canvas = document.getElementById("canvasMur");
       const ctx = canvas.getContext("2d");
+
+      // Adapter la taille du canvas à l'écran
+      canvas.width = document.querySelector(".container").clientWidth - 40;
+      canvas.height = 400;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Mise à l'échelle
