@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Simulateur de couverture murale</title>
   <!-- Bootstrap 5 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Select2 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -13,8 +13,8 @@
       border: 1px solid #333;
       margin-top: 20px;
       background-color: #f9f9f9;
-      width: 100%;   /* Responsive */
-      height: auto;  /* Responsive */
+      width: 100%;
+      height: auto;
     }
     .btn-group {
       display: flex;
@@ -150,7 +150,7 @@
       ctx.strokeStyle = "#000";
       ctx.strokeRect(0, 0, largeurMur * scaleX, hauteurMur * scaleY);
 
-      // Dessiner les carreaux
+      // Dessiner les carreaux (vert)
       ctx.fillStyle = "#4CAF50";
       for (let i = 0; i < nbLargeur; i++) {
         for (let j = 0; j < nbHauteur; j++) {
@@ -168,6 +168,21 @@
           );
         }
       }
+
+      // Colorier la surface perdue en rouge
+      ctx.fillStyle = "rgba(255,0,0,0.5)";
+      ctx.fillRect(
+        nbLargeur * largeurCarreau * scaleX,
+        0,
+        (largeurMur - nbLargeur * largeurCarreau) * scaleX,
+        hauteurMur * scaleY
+      );
+      ctx.fillRect(
+        0,
+        nbHauteur * hauteurCarreau * scaleY,
+        largeurMur * scaleX,
+        (hauteurMur - nbHauteur * hauteurCarreau) * scaleY
+      );
     });
   </script>
 </body>
