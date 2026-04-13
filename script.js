@@ -115,25 +115,63 @@ $(document).ready(function () {
       largeurMur * scaleX,
       (hauteurMur - nbHauteur * hauteurCarreau) * scaleY
     );
+
+    // Sauvegarde simulation dans Local Storage
+    let imageData = canvas.toDataURL("image/png");
+    let simulation = {
+      dimensions: dimensions,
+      carreau: `${largeurCarreau}x${hauteurCarreau}`,
+      nbLargeur,
+      nbHauteur,
+      nbTotal,
+      surfaceMur,
+      surfaceCouverte,
+      perte,
+      pourcentagePerte,
+      image: imageData,
+      date: new Date().toLocaleString()
+    };
+
+    let simulations = JSON.parse(localStorage.getItem("simulations")) || [];
+    simulations.push(simulation);
+    localStorage.setItem("simulations", JSON.stringify(simulations));
   });
 
   // Bouton Enregistrer & Nouvelle simulation
   $('#saveBtn').on('click', function () {
-    // Sauvegarde du canvas en image
-    let canvas = $('#canvasMur')[0];
-    let imageData = canvas.toDataURL("image/png");
-
-    // Création d'un lien de téléchargement
-    let link = document.createElement('a');
-    link.href = imageData;
-    link.download = 'simulation.png';
-    link.click();
-
     // Réinitialiser le formulaire et les résultats
     $('#formCarrelage')[0].reset();
     $('#dimensionsMur').val('').trigger('change');
     $('#resultat').empty();
+    let canvas = $('#canvasMur')[0];
     let ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+
+  // Bouton pour afficher l’historique des simulations
+  $('#historyBtn').on('click', function () {
+    let simulations = JSON.parse(localStorage.getItem("simulations")) || [];
+    if (simulations.length === 0) {
+      alert("Aucune simulation enregistrée.");
+      return;
+    }
+
+    let html = '<h5>Historique des simulations</h5>';
+    simulations.forEach((sim, index) => {
+      html += `
+        <div class="card mb-2">
+          <div class="card-body">
+            <strong>Simulation ${index + 1} (${sim.date})</strong><br>
+            Mur : ${sim.dimensions} cm<br>
+            Carreau : ${sim.carreau} cm<br>
+            Carreaux : ${sim.nbTotal}<br>
+            Perte : ${sim.perte} cm² (${sim.pourcentagePerte} %)<br>
+            <img src="${sim.image}" alt="Simulation ${index + 1}" class="img-fluid mt-2"/>
+          </div>
+        </div>
+      `;
+    });
+    $('#resultat').html(html);
+    $('#resultatCollapse').collapse('show');
   });
 });
