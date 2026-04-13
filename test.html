@@ -16,26 +16,10 @@
       </div>
       <div class="card-body">
         <form id="formCarrelage" class="row g-3">
-          <div class="col-md-6">
-            <label for="longueurMur" class="form-label">Largeur du mur (cm)</label>
-            <select class="form-select" id="longueurMur" required>
-              <!-- Options de 30 à 150 -->
-              <script>
-                for (let i = 30; i <= 150; i++) {
-                  document.write(`<option value="${i}">${i} cm</option>`);
-                }
-              </script>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="hauteurMur" class="form-label">Hauteur du mur (cm)</label>
-            <select class="form-select" id="hauteurMur" required>
-              <!-- Options de 30 à 300 -->
-              <script>
-                for (let i = 30; i <= 300; i++) {
-                  document.write(`<option value="${i}">${i} cm</option>`);
-                }
-              </script>
+          <div class="col-md-12">
+            <label for="dimensionsMur" class="form-label">Dimensions du mur (Largeur x Hauteur en cm)</label>
+            <select class="form-select" id="dimensionsMur" required>
+              <option value="">Choisir...</option>
             </select>
           </div>
           <div class="col-md-6">
@@ -56,23 +40,39 @@
     <div id="resultat" class="mt-4"></div>
   </div>
 
-  <!-- JS Bootstrap + Select2 -->
+  <!-- JS Bootstrap + jQuery + Select2 -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <script>
-    // Activer Select2 sur les menus déroulants
+    // Générer automatiquement toutes les combinaisons largeur x hauteur
+    const selectMur = document.getElementById("dimensionsMur");
+    for (let largeur = 30; largeur <= 150; largeur += 10) { // pas de 10 cm pour limiter la liste
+      for (let hauteur = 30; hauteur <= 300; hauteur += 10) {
+        const option = document.createElement("option");
+        option.value = `${largeur}x${hauteur}`;
+        option.textContent = `${largeur} x ${hauteur} cm`;
+        selectMur.appendChild(option);
+      }
+    }
+
+    // Activer Select2
     $(document).ready(function() {
-      $('#longueurMur').select2({ placeholder: "Choisir largeur du mur", width: '100%' });
-      $('#hauteurMur').select2({ placeholder: "Choisir hauteur du mur", width: '100%' });
+      $('#dimensionsMur').select2({
+        placeholder: "Choisir les dimensions du mur",
+        width: '100%'
+      });
     });
 
+    // Calcul
     document.getElementById("formCarrelage").addEventListener("submit", function(e) {
       e.preventDefault();
 
-      const largeurMur = parseFloat(document.getElementById("longueurMur").value);
-      const hauteurMur = parseFloat(document.getElementById("hauteurMur").value);
+      const dimensions = document.getElementById("dimensionsMur").value;
+      if (!dimensions) return;
+
+      const [largeurMur, hauteurMur] = dimensions.split("x").map(Number);
       const largeurCarreau = parseFloat(document.getElementById("longueurCarreau").value);
       const hauteurCarreau = parseFloat(document.getElementById("hauteurCarreau").value);
 
