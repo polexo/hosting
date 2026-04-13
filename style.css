@@ -1,0 +1,13 @@
+#canvasMur {
+  border: 1px solid #333;
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  width: 100%;
+  height: auto;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
