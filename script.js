@@ -116,4 +116,24 @@ $(document).ready(function () {
       (hauteurMur - nbHauteur * hauteurCarreau) * scaleY
     );
   });
+
+  // Bouton Enregistrer & Nouvelle simulation
+  $('#saveBtn').on('click', function () {
+    // Sauvegarde du canvas en image
+    let canvas = $('#canvasMur')[0];
+    let imageData = canvas.toDataURL("image/png");
+
+    // Création d'un lien de téléchargement
+    let link = document.createElement('a');
+    link.href = imageData;
+    link.download = 'simulation.png';
+    link.click();
+
+    // Réinitialiser le formulaire et les résultats
+    $('#formCarrelage')[0].reset();
+    $('#dimensionsMur').val('').trigger('change');
+    $('#resultat').empty();
+    let ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
 });
